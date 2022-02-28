@@ -1,6 +1,7 @@
 # pdm-make
-tool.pdm.scripts for building à la `make`
+tool.pdm.scripts for building à la [make](https://en.wikipedia.org/wiki/Make_(software))
 
+In `pyproject.toml`:
 ```
 [tool.pdm.scripts]
 make.shell = "pdm run tags && pdm run lint && pdm run test && pdm build"
