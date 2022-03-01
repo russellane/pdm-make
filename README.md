@@ -2,7 +2,7 @@
 tool.pdm.scripts for building à la [make](https://en.wikipedia.org/wiki/Make_(software))
 
 In `pyproject.toml`:
-```
+```toml
 [tool.pdm.scripts]
 make.shell = "pdm run tags && pdm run lint && pdm run test && pdm build"
 rebuild.shell = "pdm run clean-all && pdm install && pdm run make"
@@ -22,7 +22,7 @@ clean.shell = """find . -type f -name '*.py[co]' -delete &&
 ```
 
 In `~/.vimrc`:
-```
+```vim
 if filereadable('pyproject.toml')
     set makeprg=pdm\ run\ make
 endif
