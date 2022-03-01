@@ -37,7 +37,7 @@ publish.shell = """cd dist; echo *.whl |
             cpio -pdmuv `pip config get global.find-links`
 """
 #
-tags.shell = "ctags -R $SRCDIRS __pypackages__"
+tags.shell = "ctags -R --languages=python $SRCDIRS __pypackages__"
 clean-all.shell = "pdm run clean; rm -rf tags __pypackages__ dist"
 clean.shell = """find . -type f -name '*.py[co]' -delete &&
             find . -type d -name __pycache__ -delete
@@ -46,9 +46,9 @@ doc.shell = """export COLUMNS=97;
             pdm run netflix --help |
             pdm run mandown --width 89 --use-config >README.md
 """
-#xinstall.shell = "pip install --user dist/*.whl"
+#xxinstall.shell = "pip install --user dist/*.whl"
 #uninstall.shell = "pip uninstall $PACKAGE"
-#reinstall.shell = "pdm run uninstall; pdm run install"
+#reinstall.shell = "pdm run uninstall; pdm run xxinstall"
 ```
 
 In `~/.vimrc`:
