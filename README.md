@@ -1,7 +1,7 @@
 # pdm-make
-tool.pdm.scripts for building à la [make](https://en.wikipedia.org/wiki/Make_(software))
+[tool.pdm.scripts](https://pdm.fming.dev/usage/scripts/) for building à la [make](https://en.wikipedia.org/wiki/Make_(software))
 
-In `pyproject.toml`:
+## pyproject.toml
 
 ```toml
 [tool.pdm.scripts]
@@ -32,6 +32,7 @@ NEW=`pdm run semver -i patch $OLD`;
 echo Bumping version patch level: $OLD '->' $NEW;
 echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$NEW\\"" >$VERSION_FILE
 """
+
 #bump-minor.shell = """
 #OLD=`sed -n 's/^__version__ = "\\(.*\\)"/\\1/p' <$VERSION_FILE`;
 #NEW=`pdm run semver -i minor $OLD`;
@@ -85,7 +86,7 @@ pdm run python -m mandown --width 89 --use-config >README.md
 #reinstall.shell = "pdm run uninstall; pdm run xxinstall"
 ```
 
-In `~/.vimrc`:
+## ~/.vimrc
 
 ```vim
 if filereadable('pyproject.toml')
@@ -93,4 +94,5 @@ if filereadable('pyproject.toml')
 endif
 ```
 
-In `vim`, run `:make`, then use `:cnext` and `:cprevious` to move through errors.
+## vim
+run `:make`, then use `:cnext` and `:cprevious` to move through errors.
