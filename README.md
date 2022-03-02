@@ -89,7 +89,7 @@ In `~/.vimrc`:
 
 ```vim
 if filereadable('pyproject.toml')
-    set makeprg=pdm\ run\ make
+    set makeprg=pdm\ build
 endif
 ```
 
