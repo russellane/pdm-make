@@ -33,24 +33,24 @@ test.shell = "[ -d tests ] && pdm run pytest || true"
 pytest.shell = """pdm run python -m pytest \
             --exitfirst --showlocals --verbose tests
 """
-bump-micro.shell = """VERSION=`awk '/^__version__/ {
-                split(substr($3, 2), a, ".");
-                print a[1] "." a[2] "." a[3] + 1}' <$VERSION_FILE`;
-            echo Bumping version MICRO level: $VERSION;
-            echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$VERSION\\"" >$VERSION_FILE
+bump-patch.shell = """
+OLD=`sed -n 's/^__version__ = "\\(.*\\)"/\\1/p' <$VERSION_FILE`;
+NEW=`pdm run semver -i patch $OLD`;
+echo Bumping version patch level: $OLD '->' $NEW;
+echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$NEW\\"" >$VERSION_FILE
 """
-#bump-minor.shell = """VERSION=`awk '/^__version__/ {
-#                split(substr($3, 2), a, ".");
-#                print a[1] "." a[2] + 1 ".0"}' <$VERSION_FILE`;
-#            echo Bumping version MINOR level: $VERSION;
-#            echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$VERSION\\"" >$VERSION_FILE
-#"""
-#bump-major.shell = """VERSION=`awk '/^__version__/ {
-#                split(substr($3, 2), a, ".");
-#                print a[1] + 1 ".0.0"}' <$VERSION_FILE`;
-#            echo Bumping version MAJOR level: $VERSION;
-#            echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$VERSION\\"" >$VERSION_FILE
-#"""
+bump-minor.shell = """
+OLD=`sed -n 's/^__version__ = "\\(.*\\)"/\\1/p' <$VERSION_FILE`;
+NEW=`pdm run semver -i minor $OLD`;
+echo Bumping version minor level: $OLD '->' $NEW;
+echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$NEW\\"" >$VERSION_FILE
+"""
+bump-major.shell = """
+OLD=`sed -n 's/^__version__ = "\\(.*\\)"/\\1/p' <$VERSION_FILE`;
+NEW=`pdm run semver -i major $OLD`;
+echo Bumping version major level: $OLD '->' $NEW;
+echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$NEW\\"" >$VERSION_FILE
+"""
 publish.shell = """cd dist; echo *.whl |
             cpio -pdmuv `pip config get global.find-links`
 """
