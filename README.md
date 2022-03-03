@@ -5,11 +5,15 @@
 
 ```toml
 [tool.pdm.scripts]
-# https://pdm.fming.dev/usage/scripts/
 
-_.env = {PKGNAME="netflix", PKGDIRS = "netflix tests", VERSION_FILE = "netflix/__version__.py"}
+_.env = {PKGNAME="netflix", PKGDIRS = "netflix tests"}
 
-rebuild.shell = "pdm run clean-all && pdm install && pdm build"
+rebuild.shell = "pdm run clean && pdm install && pdm build"
+
+# depends on: `pip install --user pdm-bump`
+bump-micro.shell = "pdm bump micro && pdm run rebuild"
+
+# .vimrc: set makeprg=pdm\ build
 pre_build.shell = "pdm run tags && pdm run lint && pdm run tests && pdm run doc"
 post_build.shell = "pdm run version"
 
@@ -26,51 +30,13 @@ pylint.shell = "pdm run python -m pylint $PKGDIRS"
 tests.shell = "pdm run pytest"
 pytest.shell = "pdm run python -m pytest --exitfirst --showlocals --verbose tests"
 
-bump-patch.shell = """
-OLD=`sed -n 's/^__version__ = "\\(.*\\)"/\\1/p' <$VERSION_FILE`;
-NEW=`pdm run semver -i patch $OLD`;
-echo Bumping version patch level: $OLD '->' $NEW;
-echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$NEW\\"" >$VERSION_FILE
-"""
-
-#bump-minor.shell = """
-#OLD=`sed -n 's/^__version__ = "\\(.*\\)"/\\1/p' <$VERSION_FILE`;
-#NEW=`pdm run semver -i minor $OLD`;
-#echo Bumping version minor level: $OLD '->' $NEW;
-#echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$NEW\\"" >$VERSION_FILE
-#"""
-#bump-major.shell = """
-#OLD=`sed -n 's/^__version__ = "\\(.*\\)"/\\1/p' <$VERSION_FILE`;
-#NEW=`pdm run semver -i major $OLD`;
-#echo Bumping version major level: $OLD '->' $NEW;
-#echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$NEW\\"" >$VERSION_FILE
-#"""
-#bump-micro.shell = """VERSION=`awk '/^__version__/ {
-#                split(substr($3, 2), a, ".");
-#                print a[1] "." a[2] "." a[3] + 1}' <$VERSION_FILE`;
-#            echo Bumping version MICRO level: $VERSION;
-#            echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$VERSION\\"" >$VERSION_FILE
-#"""
-#bump-minor.shell = """VERSION=`awk '/^__version__/ {
-#                split(substr($3, 2), a, ".");
-#                print a[1] "." a[2] + 1 ".0"}' <$VERSION_FILE`;
-#            echo Bumping version MINOR level: $VERSION;
-#            echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$VERSION\\"" >$VERSION_FILE
-#"""
-#bump-major.shell = """VERSION=`awk '/^__version__/ {
-#                split(substr($3, 2), a, ".");
-#                print a[1] + 1 ".0.0"}' <$VERSION_FILE`;
-#            echo Bumping version MAJOR level: $VERSION;
-#            echo "\\"\\"\\"Version.\\"\\"\\"\\n\\n__version__ = \\"$VERSION\\"" >$VERSION_FILE
-#"""
-
 publish.shell = """
 cd dist; echo *.whl |
 cpio -pdmuv `pip config get global.find-links`
 """
 
-clean-all.shell = "pdm run clean; rm -rf tags __pypackages__ dist"
 clean.shell = """
+rm -rf ./__pypackages__ ./.pytest_cache ./dist ./tags;
 find . -type f -name '*.py[co]' -delete &&
 find . -type d -name __pycache__ -delete
 """
