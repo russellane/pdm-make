@@ -4,6 +4,11 @@
 ## pyproject.toml
 
 ```toml
+[tool.pdm.scripts._.env]
+PKGNAME = "wumpus"
+PKGDIRS = "wumpus tests"
+VERBOSE = ""
+
 [tool.pdm.scripts]
 _.env = {PKGNAME="wumpus", PKGDIRS = "wumpus tests", VERBOSE=""}
 
@@ -45,9 +50,10 @@ pdm run python -m $PKGNAME --help |
 pdm run python -m mandown --width 89 --use-config >README.md
 """
 
-#xxinstall.shell = "pip install --user dist/*.whl"
-#uninstall.shell = "pip uninstall $PACKAGE"
-#reinstall.shell = "pdm run uninstall; pdm run xxinstall"
+# Don't use `install` else `pre_install` and/or `post_install` will also run.
+xxinstall.shell = "pipx install $PKGNAME"
+uninstall.shell = "pipx uninstall $PKGNAME"
+reinstall.shell = "pdm run uninstall; pdm run xxinstall"
 ```
 
 ## ~/.vimrc
