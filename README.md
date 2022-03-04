@@ -5,16 +5,14 @@
 
 ```toml
 [tool.pdm.scripts]
-
-_.env = {PKGNAME="netflix", PKGDIRS = "netflix tests"}
+_.env = {PKGNAME="wumpus", PKGDIRS = "wumpus tests", VERBOSE=""}
 
 rebuild.shell = "pdm run clean && pdm install && pdm build"
-
 # depends on: `pip install --user pdm-bump`
 bump-micro.shell = "pdm bump micro && pdm run rebuild"
 
 # .vimrc: set makeprg=pdm\ build
-pre_build.shell = "pdm run tags && pdm run lint && pdm run tests && pdm run doc"
+pre_build.shell = "pdm run tags && pdm run lint && pdm run test && pdm run doc"
 post_build.shell = "pdm run version"
 
 help.shell = "pdm run python -m $PKGNAME --help"
@@ -22,12 +20,12 @@ version.shell = "pdm run python -m $PKGNAME --version"
 tags.shell = "ctags -R --languages=python $PKGDIRS __pypackages__"
 
 lint.shell = "pdm run black && pdm run flake8 && pdm run isort && pdm run pylint"
-black.shell = "pdm run python -m black -q $PKGDIRS"
-flake8.shell = "pdm run python -m flake8 $PKGDIRS"
-isort.shell = "pdm run python -m isort $PKGDIRS"
-pylint.shell = "pdm run python -m pylint $PKGDIRS"
+black.shell = "pdm run python -m black -q $VERBOSE $PKGDIRS"
+flake8.shell = "pdm run python -m flake8 $VERBOSE $PKGDIRS"
+isort.shell = "pdm run python -m isort $VERBOSE $PKGDIRS"
+pylint.shell = "pdm run python -m pylint $VERBOSE $PKGDIRS"
 
-tests.shell = "pdm run pytest"
+test.shell = "pdm run pytest"
 pytest.shell = "pdm run python -m pytest --exitfirst --showlocals --verbose tests"
 
 publish.shell = """
@@ -61,4 +59,4 @@ endif
 ```
 
 ## vim
-run `:make`, then use `:cnext` and `:cprevious` to move through errors.
+Run `:make`, then use `:cnext` and `:cprevious` to move through errors.
