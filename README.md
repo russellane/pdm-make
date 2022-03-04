@@ -10,8 +10,6 @@ PKGDIRS = "wumpus tests"
 VERBOSE = ""
 
 [tool.pdm.scripts]
-_.env = {PKGNAME="wumpus", PKGDIRS = "wumpus tests", VERBOSE=""}
-
 rebuild.shell = "pdm run clean && pdm install && pdm build"
 # depends on: `pip install --user pdm-bump`
 bump-micro.shell = "pdm bump micro && pdm run rebuild"
