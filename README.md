@@ -20,39 +20,39 @@ bump-micro.shell = "pdm bump micro && pdm run rebuild"
 pre_build.shell = "pdm run tags && pdm run lint && pdm run test && pdm run doc"
 post_build.shell = "pdm run version"
 
-help.shell = "pdm run python -m $PKGNAME --help"
-version.shell = "pdm run python -m $PKGNAME --version"
-tags.shell = "ctags -R --languages=python $PKGDIRS __pypackages__"
+help.shell = "set -x; pdm run python -m $PKGNAME --help"
+version.shell = "set -x; pdm run python -m $PKGNAME --version"
+tags.shell = "set -x; ctags -R --languages=python $PKGDIRS __pypackages__"
 
 lint.shell = "pdm run black && pdm run flake8 && pdm run isort && pdm run pylint"
-black.shell = "pdm run python -m black -q $VERBOSE $PKGDIRS"
-flake8.shell = "pdm run python -m flake8 $VERBOSE $PKGDIRS"
-isort.shell = "pdm run python -m isort $VERBOSE $PKGDIRS"
-pylint.shell = "pdm run python -m pylint $VERBOSE $PKGDIRS"
+black.shell = "set -x; pdm run python -m black -q $VERBOSE $PKGDIRS"
+flake8.shell = "set -x; pdm run python -m flake8 $VERBOSE $PKGDIRS"
+isort.shell = "set -x; pdm run python -m isort $VERBOSE $PKGDIRS"
+pylint.shell = "set -x; pdm run python -m pylint $VERBOSE $PKGDIRS"
 
 test.shell = "pdm run pytest"
 pytest.shell = "pdm run python -m pytest --exitfirst --showlocals --verbose tests"
 
-publish.shell = """
-cd dist; echo *.whl |
+publish.shell = """set -x; cd dist; echo *.whl |
 cpio -pdmuv `pip config get global.find-links`
 """
 
-clean.shell = """
+clean.shell = """set -x;
 rm -rf ./__pypackages__ ./.pytest_cache ./dist ./tags;
 find . -type f -name '*.py[co]' -delete &&
 find . -type d -name __pycache__ -delete
 """
 
-doc.shell = """
-export COLUMNS=97;
+doc.shell = """export COLUMNS=97;
 pdm run python -m $PKGNAME --help |
 pdm run python -m mandown --width 89 --use-config >README.md
 """
 
-# Don't use `install` else `pre_install` and/or `post_install` will also run.
-xxinstall.shell = "pipx install $PKGNAME"
-uninstall.shell = "pipx uninstall $PKGNAME"
+# Don't name `install` else `pre_install` and/or `post_install` will also run.
+#xxinstall.shell = "set -x; unset PYTHONPATH; pip install --user $PKGNAME"
+#uninstall.shell = "set -x; unset PYTHONPATH; pip uninstall $PKGNAME"
+xxinstall.shell = "set -x; pipx install $PKGNAME"
+uninstall.shell = "set -x; pipx uninstall $PKGNAME"
 reinstall.shell = "pdm run uninstall; pdm run xxinstall"
 ```
 
