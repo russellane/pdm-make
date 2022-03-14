@@ -22,11 +22,10 @@ help.shell = "set -x; pdm run python -m $PKGNAME --help"
 version.shell = "set -x; pdm run python -m $PKGNAME --version"
 tags.shell = "set -x; ctags -R --languages=python $PKGDIRS __pypackages__"
 
-lint.shell = "pdm run black && pdm run flake8 && pdm run isort && pdm run pylint"
+lint.shell = "pdm run black && pdm run isort && pdm run flake"
 black.shell = "set -x; pdm run python -m black -q $VERBOSE $PKGDIRS"
-flake8.shell = "set -x; pdm run python -m flake8 $VERBOSE $PKGDIRS"
+flake.shell = "set -x; pdm run python -m flake8 $VERBOSE $PKGDIRS"
 isort.shell = "set -x; pdm run python -m isort $VERBOSE $PKGDIRS"
-pylint.shell = "set -x; pdm run python -m pylint $VERBOSE $PKGDIRS"
 
 test.shell = "pdm run pytest"
 pytest.shell = "pdm run python -m pytest --exitfirst --showlocals --verbose tests"
@@ -41,7 +40,7 @@ find . -type f -name '*.py[co]' -delete &&
 find . -type d -name __pycache__ -delete
 """
 
-doc.shell = """export COLUMNS=97;
+doc.shell = """set -x; export COLUMNS=97;
 pdm run python -m $PKGNAME --help |
 pdm run python -m mandown --width 89 --use-config >README.md
 """
