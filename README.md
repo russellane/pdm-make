@@ -10,10 +10,6 @@ PKGDIRS = "wumpus tests"
 VERBOSE = ""
 
 [tool.pdm.scripts]
-rebuild.shell = "pdm run clean && pdm install && pdm build"
-# depends on: `pip install --user pdm-bump`
-bump-micro.shell = "pdm bump micro && pdm run rebuild"
-
 # .vimrc: set makeprg=pdm\ build
 pre_build.shell = "pdm run tags && pdm run lint && pdm run test && pdm run doc"
 post_build.shell = "pdm run version"
@@ -24,8 +20,8 @@ tags.shell = "set -x; ctags -R --languages=python $PKGDIRS __pypackages__"
 
 lint.shell = "pdm run black && pdm run isort && pdm run flake"
 black.shell = "set -x; pdm run python -m black -q $VERBOSE $PKGDIRS"
-flake.shell = "set -x; pdm run python -m flake8 $VERBOSE $PKGDIRS"
 isort.shell = "set -x; pdm run python -m isort $VERBOSE $PKGDIRS"
+flake.shell = "set -x; pdm run python -m flake8 $VERBOSE $PKGDIRS"
 
 test.shell = "pdm run pytest"
 pytest.shell = "pdm run python -m pytest --exitfirst --showlocals --verbose tests"
@@ -44,6 +40,10 @@ doc.shell = """set -x; export COLUMNS=97;
 pdm run python -m $PKGNAME --help |
 pdm run python -m mandown --width 89 --use-config >README.md
 """
+
+rebuild.shell = "pdm run clean && pdm install && pdm build"
+# depends on: `pip install --user pdm-bump`
+bump-micro.shell = "pdm bump micro && pdm run rebuild"
 
 # Don't name `install` else `pre_install` and/or `post_install` will also run.
 #xxinstall.shell = "set -x; unset PYTHONPATH; pip install --user $PKGNAME"
