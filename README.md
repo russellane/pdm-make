@@ -4,53 +4,35 @@
 ## pyproject.toml
 
 ```toml
-[tool.pdm.scripts._.env]
-PKGNAME = "wumpus"
-PKGDIRS = "wumpus tests"
-VERBOSE = ""
-
 [tool.pdm.scripts]
 # .vimrc: set makeprg=pdm\ build
-pre_build.shell = "pdm run tags && pdm run lint && pdm run test && pdm run doc"
-post_build.shell = "pdm run version"
-
-help.shell = "set -x; pdm run python -m $PKGNAME --help"
-version.shell = "set -x; pdm run python -m $PKGNAME --version"
-tags.shell = "set -x; ctags -R --languages=python $PKGDIRS __pypackages__"
-
-lint.shell = "pdm run black && pdm run isort && pdm run flake"
-black.shell = "set -x; pdm run python -m black -q $VERBOSE $PKGDIRS"
-isort.shell = "set -x; pdm run python -m isort $VERBOSE $PKGDIRS"
-flake.shell = "set -x; pdm run python -m flake8 $VERBOSE $PKGDIRS"
-
-test.shell = "pdm run pytest"
-pytest.shell = "pdm run python -m pytest --exitfirst --showlocals --verbose tests"
-
+pre_build.shell = """set -x;
+ctags -R --languages=python __pypackages__ wumpus tests;
+python -m black -q wumpus tests &&
+python -m isort wumpus tests &&
+python -m flake8 wumpus tests &&
+python -m pytest --exitfirst --showlocals --verbose tests &&
+{ export COLUMNS=97; python -m wumpus --help |
+python -m mandown --width 89 --use-config >README.md; };
+"""
+rebuild.shell = "set -x; rm -f pdm.lock; pdm run clean && pdm install && pdm build"
+clean.shell = """set -x;
+rm -rf __pypackages__ .pytest_cache dist tags;
+find . -type f -name '*.py[co]' -delete &&
+find . -type d -name __pycache__ -delete
+"""
+# bump depends on: `pip install --user pdm-bump`
+bump-micro.shell = "set -x; pdm bump micro && pdm run rebuild"
 publish.shell = """set -x; cd dist; echo *.whl |
 cpio -pdmuv `pip config get global.find-links`
 """
 
-clean.shell = """set -x;
-rm -rf ./__pypackages__ ./.pytest_cache ./dist ./tags;
-find . -type f -name '*.py[co]' -delete &&
-find . -type d -name __pycache__ -delete
-"""
-
-doc.shell = """set -x; export COLUMNS=97;
-pdm run python -m $PKGNAME --help |
-pdm run python -m mandown --width 89 --use-config >README.md
-"""
-
-rebuild.shell = "pdm run clean && pdm install && pdm build"
-# depends on: `pip install --user pdm-bump`
-bump-micro.shell = "pdm bump micro && pdm run rebuild"
-
 # Don't name `install` else `pre_install` and/or `post_install` will also run.
-#xxinstall.shell = "set -x; unset PYTHONPATH; pip install --user $PKGNAME"
-#uninstall.shell = "set -x; unset PYTHONPATH; pip uninstall $PKGNAME"
-xxinstall.shell = "set -x; pipx install $PKGNAME"
-uninstall.shell = "set -x; pipx uninstall $PKGNAME"
-reinstall.shell = "pdm run uninstall; pdm run xxinstall"
+#xxinstall.shell = "set -x; unset PYTHONPATH; pip install --user wumpus"
+#uninstall.shell = "set -x; unset PYTHONPATH; pip uninstall wumpus"
+xxinstall.shell = "set -x; pipx install wumpus"
+uninstall.shell = "set -x; pipx uninstall wumpus"
+reinstall.shell = "set -x; pdm run uninstall; pdm run xxinstall"
 ```
 
 ## ~/.vimrc
